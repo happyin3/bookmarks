@@ -2,12 +2,20 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>bookmarks</title>
 
     <!-- css -->
     <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
     <link rel="stylesheet" href="https://getbootstrap.com/docs/4.0/examples/sticky-footer/sticky-footer.css">
+
+    <style>
+        .div-container-body {
+            padding-top: 30px;
+            padding-bottom: 30px;
+        }
+    </style>
 </head>
 <body>
     <div class="header">
@@ -17,11 +25,11 @@
         </nav>
     </div>
     <div class="bodyer">
-        <div class="container div-container-body"></div>
+        <div class="container-fluid div-container-body"></div>
     </div>
     <div class="footer">
         <footer class="footer">
-            <div class="container">footer</div>
+            <div class="container-fluid">powered by happyin3</div>
         </footer>
     </div>
     <!-- javascript -->
@@ -33,15 +41,27 @@
     <script src="https://cdn.bootcss.com/juicer/0.6.15/juicer-min.js"></script>
 
     <script type="text/juicer" id="bookmarks-tpl">
-        {@each links as item}
-            <div><a href="${item.link}">${item.title}</a></div>
-        {@/each}
+        <div class="list-group">
+            {@each links as item}
+                <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" target="_blank" href="${item.link}">
+                    ${item.title}
+                    {@each item.tags as tag}
+                        <span class="badge badge-primary badge-pill">${tag}</span>
+                    {@/each}
+                </a>
+            {@/each}
+        </div>
     </script>
 
     <script>
         var data = {
             'links': [
-                {'title': 'title', 'link': 'link'}    
+                {'title': 'title', 'link': 'link', 'tags': ['1']},
+                {'title': 'title', 'link': 'link', 'tags': ['1']},
+                {'title': 'title', 'link': 'link', 'tags': ['1']},
+                {'title': 'title', 'link': 'link', 'tags': ['1']},
+                {'title': 'title', 'link': 'link', 'tags': ['1']},
+                {'title': 'title', 'link': 'link', 'tags': ['1']},
             ]
         } 
 

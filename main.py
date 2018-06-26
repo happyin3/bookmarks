@@ -4,7 +4,7 @@ __author__ = 'happyin3 (happyinx3@gmail.com)'
 
 
 import sys
-from server.server import make_server
+from happiness.server import make_server
 
 SERVER_ADDRESS = (HOST, PORT) = '', 8888
 

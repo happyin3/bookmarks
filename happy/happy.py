@@ -3,7 +3,7 @@ __author__ = 'happyin3 (happyinx3@gmail.com)'
 
 def notfound_404(environ, start_response):
     start_response('404 Not Found', [('Content-type', 'text/plain')])
-    return [b'Not Found']
+    return ['Not Found']
 
 
 class Happy(object):

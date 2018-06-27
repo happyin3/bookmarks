@@ -14,9 +14,13 @@ class Happy(object):
     def __call__(self, environ, start_response):
         method = environ['REQUEST_METHOD'].lower()
         path = environ['PATH_INFO']
+        params = path.split('?')[1].split('&')
+
         # params = cgi.FieldStorage(environ['wsgi.input'], environ=environ)
         # environ['params'] = {key: params.getvalue(key) for key in params}
-        handler = self.path_map.get((method, path), notfound_404)
+        environ['params'] = {val.split('=')[0]: val.split('=')[1] for val in params}
+
+        handler = self.path_map.get((method, path.split('?')[0]), notfound_404)
         return handler(environ, start_response)
 
     def register(self, method, path, function):

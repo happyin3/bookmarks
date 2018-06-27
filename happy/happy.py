@@ -14,7 +14,9 @@ class Happy(object):
     def __call__(self, environ, start_response):
         method = environ['REQUEST_METHOD'].lower()
         path = environ['PATH_INFO']
-        params = path.split('?')[1].split('&')
+        params = []
+        if len(path.split('?')) == 2:
+            params = path.split('?')[1].split('&')
 
         # params = cgi.FieldStorage(environ['wsgi.input'], environ=environ)
         # environ['params'] = {key: params.getvalue(key) for key in params}

@@ -8,7 +8,7 @@ import json
 import datetime
 
 
-def add(title, link, tag):
+def add(k, t, l, tag):
     data = dict(
         title=str(title),
         link=str(link),
@@ -17,13 +17,17 @@ def add(title, link, tag):
     )
     print(data)
 
+    file_path = 'ref.json'
+    if k == 'w':
+        file_path = 'ref_website.json'
+
     links = dict(links=[])
-    with open('ref.json', 'r') as f:
+    with open(file_path, 'r') as f:
         links = json.load(f)
 
     links['links'].append(data)
 
-    with open('ref.json', 'w') as f:
+    with open(file_path, 'w') as f:
         json.dump(links, f)
 
 

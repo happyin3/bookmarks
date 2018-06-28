@@ -33,11 +33,22 @@ def get_links(environ, start_response):
     return res
 
 
+def get_websites(environ, start_response):
+    start_response('200 OK', [('Content-Type', 'application/json')])
+
+    res = json.dumps(dict(links=[]))
+    with open('ref_website.json', 'r') as f:
+        res = f.read()
+
+    return res
+
+
 def create_app():
     app = Happy()
 
     app.register('GET', '/api/links/', get_links)
     app.register('GET', '/api/tag/links/', get_links_by_tag)
+    app.register('GET', '/api/websites/', get_websites)
 
     return app
 

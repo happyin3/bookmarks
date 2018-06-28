@@ -34,6 +34,9 @@
                   <li class="nav-item">
                     <a class="nav-link" href="#/links">Links</a>
                   </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="#/websites">Websites</a>
+                  </li>
                 </ul>
               </div>
         </nav>
@@ -70,20 +73,24 @@
     </script>
 
     <script>
+        /*
+        var data = {
+            'links': [
+                {'title': 'title', 'link': 'link', 'tags': ['1']},
+                {'title': 'title', 'link': 'link', 'tags': ['1']},
+                {'title': 'title', 'link': 'link', 'tags': ['1']},
+                {'title': 'title', 'link': 'link', 'tags': ['1']},
+                {'title': 'title', 'link': 'link', 'tags': ['1']},
+                {'title': 'title', 'link': 'link', 'tags': ['1']},
+            ]
+        }
+        var tpl = document.getElementById('bookmarks-tpl').innerHTML;
+        var html = juicer(tpl, data);
+
+        $('.div-container-body').html(html);
+        */
+
         function renderLinkByTag(tag){
-            /*
-            var data = {
-                'links': [
-                    {'title': 'title', 'link': 'link', 'tags': ['1']},
-                    {'title': 'title', 'link': 'link', 'tags': ['1']},
-                ]
-            }
-            var tpl = document.getElementById('bookmarks-tpl').innerHTML;
-            var html = juicer(tpl, data);
-
-            $('.div-container-body').html(html);
-            */
-
             $.ajax({
                 type: 'GET',
                 url: '/api/tag/links/',
@@ -101,26 +108,25 @@
         }
 
         function renderLinks(){
-            /*
-            var data = {
-                'links': [
-                    {'title': 'title', 'link': 'link', 'tags': ['1']},
-                    {'title': 'title', 'link': 'link', 'tags': ['1']},
-                    {'title': 'title', 'link': 'link', 'tags': ['1']},
-                    {'title': 'title', 'link': 'link', 'tags': ['1']},
-                    {'title': 'title', 'link': 'link', 'tags': ['1']},
-                    {'title': 'title', 'link': 'link', 'tags': ['1']},
-                ]
-            }
-            var tpl = document.getElementById('bookmarks-tpl').innerHTML;
-            var html = juicer(tpl, data);
-
-            $('.div-container-body').html(html);
-            */
-
             $.ajax({
                 type: 'GET',
                 url: '/api/links/',
+                dataType: 'json',
+                success: function(res){
+                    var data = res; 
+
+                    var tpl = document.getElementById('bookmarks-tpl').innerHTML;
+                    var html = juicer(tpl, data);
+
+                    $('.div-container-body').html(html);
+                }
+            });
+        } 
+
+        function renderWebsites(){
+            $.ajax({
+                type: 'GET',
+                url: '/api/websites/',
                 dataType: 'json',
                 success: function(res){
                     var data = res; 
@@ -141,13 +147,17 @@
                 '': 'index',  
                 'links': 'index', 
                 'tag/:tag/': 'renderLinkByTag', 
+                'websites': 'renderWebsites'
             },  
             index: function() {  
                 renderLinks();
             },  
             renderLinkByTag: function(tag){
                 renderLinkByTag(tag); 
-            }
+            },
+            renderWebsites: function(){
+                renderWebsites(); 
+            },
         });  
           
         var router = new AppRouter();  

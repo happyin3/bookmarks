@@ -9,6 +9,7 @@ import datetime
 
 
 def add(k, t, l, tag):
+    kind, title, link, tag = k, t, l, tag
     data = dict(
         title=str(title),
         link=str(link),
@@ -18,7 +19,7 @@ def add(k, t, l, tag):
     print(data)
 
     file_path = 'ref.json'
-    if k == 'w':
+    if kind == 'w':
         file_path = 'ref_website.json'
 
     links = dict(links=[])

@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="https://getbootstrap.com/docs/4.0/examples/sticky-footer/sticky-footer.css">
 
     <style>
-        a {
+        a, a:hover, a:visited {
             text-decoration: none;
         }
 
@@ -59,13 +59,26 @@
     <script src="https://cdn.bootcss.com/underscore.js/1.9.0/underscore-min.js"></script>
     <script src="https://cdn.bootcss.com/backbone.js/1.3.3/backbone-min.js"></script>
 
-    <script type="text/juicer" id="bookmarks-tpl">
+    <script type="text/juicer" id="links-tpl">
         <div class="list-group">
             {@each links as item}
                 <div class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
                     <a target="_blank" href="${item.link}">${item.title}</a>
                     {@each item.tags as tag}
                         <a class="badge badge-primary badge-pill" href="#/tag/${tag}/">${tag}</a>
+                    {@/each}
+                </div>
+            {@/each}
+        </div>
+    </script>
+
+    <script type="text/juicer" id="websites-tpl">
+        <div class="list-group">
+            {@each links as item}
+                <div class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                    <a target="_blank" href="${item.link}">${item.title}</a>
+                    {@each item.tags as tag}
+                        <span class="badge badge-primary badge-pill">${tag}</span>
                     {@/each}
                 </div>
             {@/each}
@@ -99,7 +112,7 @@
                 success: function(res){
                     var data = res; 
 
-                    var tpl = document.getElementById('bookmarks-tpl').innerHTML;
+                    var tpl = document.getElementById('links-tpl').innerHTML;
                     var html = juicer(tpl, data);
 
                     $('.div-container-body').html(html);
@@ -115,7 +128,7 @@
                 success: function(res){
                     var data = res; 
 
-                    var tpl = document.getElementById('bookmarks-tpl').innerHTML;
+                    var tpl = document.getElementById('links-tpl').innerHTML;
                     var html = juicer(tpl, data);
 
                     $('.div-container-body').html(html);
@@ -131,7 +144,7 @@
                 success: function(res){
                     var data = res; 
 
-                    var tpl = document.getElementById('bookmarks-tpl').innerHTML;
+                    var tpl = document.getElementById('websites-tpl').innerHTML;
                     var html = juicer(tpl, data);
 
                     $('.div-container-body').html(html);

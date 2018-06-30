@@ -2,16 +2,34 @@
 
 # reference
 - [WSGI协议的原理及实现](http://geocld.github.io/2017/08/14/wsgi/)
+- [一起写一个Web服务器（3）](http://python.jobbole.com/81820/)
 '''
 
 __author__ = 'happyin3 (happyinx3@gmail.com)'
 
 
-import socket
+import os
 import sys
 import traceback
+import errno
+import socket
+import signal
 
 from io import StringIO
+
+
+def grim_reaper(signum, frame):
+    while True:
+        try:
+            pid, status = os.waitpid(
+                -1,
+                os.WNOHANG
+            )
+        except OSError:
+            return
+
+        if pid == 0:
+            return
 
 
 class WSGIServer(object):
@@ -21,7 +39,8 @@ class WSGIServer(object):
     request_queue_size = 1
 
     def __init__(self, server_address):
-        self.listen_socket = listen_socket = socket.socket(self.address_family, self.socket_type)
+        listen_socket = socket.socket(self.address_family, self.socket_type)
+        self.listen_socket = listen_socket
         listen_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         listen_socket.bind(server_address)
         listen_socket.listen(self.request_queue_size)
@@ -37,13 +56,31 @@ class WSGIServer(object):
 
     def serve_forever(self):
         listen_socket = self.listen_socket
+
+        signal.signal(signal.SIGCHLD, grim_reaper)
+
         while True:
-            self.client_connection, client_address = listen_socket.accept()
-            print('client', client_address)
-            self.handle_one_request()
+            try:
+                self.client_connection, client_address = listen_socket.accept()
+                print('client', client_address)
+            except IOError as e:
+                code, msg = e.args
+                if code == errno.EINTR:
+                    continue
+                else:
+                    raise
+
+            pid = os.fork()
+            if pid == 0:
+                listen_socket.close()
+                self.handle_one_request()
+                self.client_connection.close()
+                os._exit(0)
+            else:
+                self.client_connection.close()
 
     def handle_one_request(self):
-        self.request_data = request_data = self.client_connection.recv(8192)
+        self.request_data = request_data = self.client_connection.recv(1024)
         print('request_data', request_data)
         self.parse_request(request_data)
 
@@ -54,7 +91,9 @@ class WSGIServer(object):
 
     def parse_request(self, data):
         format_data = data.splitlines()
-        self.request_method, self.path, self.request_version = 'GET', '/not_found/', 'HTTP/1.0'
+
+        default_request = 'GET', '/notfound/', 'HTTP/1.0'
+        self.request_method, self.path, self.request_version = default_request
 
         if len(format_data):
             request_line = data.splitlines()[0]
@@ -65,7 +104,10 @@ class WSGIServer(object):
                 traceback.print_exc()
 
             try:
-                (self.request_method, self.path, self.request_version) = request_line.split()
+                request_method, path, request_version = request_line.split()
+                self.request_method = request_method
+                self.path = path
+                self.request_version = request_version
             except ValueError:
                 traceback.print_exc()
 

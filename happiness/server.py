@@ -9,6 +9,7 @@ __author__ = 'happyin3 (happyinx3@gmail.com)'
 
 import socket
 import sys
+import traceback
 
 from io import StringIO
 
@@ -53,10 +54,20 @@ class WSGIServer(object):
 
     def parse_request(self, data):
         format_data = data.splitlines()
+        self.request_method, self.path, self.request_version = 'GET', '/not_found/', 'HTTP/1.0'
+
         if len(format_data):
             request_line = data.splitlines()[0]
-            request_line = request_line.decode().rstrip('\r\n')
-            (self.request_method, self.path, self.request_version) = request_line.split()
+
+            try:
+                request_line = request_line.decode().rstrip('\r\n')
+            except UnicodeDecodeError:
+                traceback.print_exc()
+
+            try:
+                (self.request_method, self.path, self.request_version) = request_line.split()
+            except ValueError:
+                traceback.print_exc()
 
     def get_environ(self):
         env = {}
